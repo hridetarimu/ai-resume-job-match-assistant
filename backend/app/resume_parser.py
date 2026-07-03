@@ -13,3 +13,8 @@ def extract_text_from_pdf(file):
             text += page_text + "\n"
 
     return text
+
+def clean_job_description(text: str) -> str:
+    cleaned_text = text.strip()
+    cleaned_text = " ".join(cleaned_text.split())
+    return cleaned_text
