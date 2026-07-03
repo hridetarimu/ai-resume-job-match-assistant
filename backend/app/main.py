@@ -1,8 +1,11 @@
 from fastapi import FastAPI, UploadFile, File
 from app.resume_parser import extract_text_from_pdf
+from pydantic import BaseModel
+from app.job_parser import clean_job_description
 
 app = FastAPI(title="AI Resume Job Match Assistant")
-
+class JobDescription(BaseModel):
+    text: str
 
 @app.get("/")
 def home():
@@ -21,4 +24,15 @@ async def upload_resume(file: UploadFile = File(...)):
     return {
         "filename": file.filename,
         "text": text[:1000]  # Return first 1000 characters
+    }
+
+
+@app.post("/parse-job")
+def parse_job(job: JobDescription):
+    cleaned_text = clean_job_description(job.text)
+
+    return {
+        "original_length": len(job.text),
+        "cleaned_length": len(cleaned_text),
+        "cleaned_text": cleaned_text[:1000]
     }
