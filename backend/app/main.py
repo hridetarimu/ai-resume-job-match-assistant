@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File
+from app.resume_parser import extract_text_from_pdf
 
 app = FastAPI(title="AI Resume Job Match Assistant")
 
@@ -15,8 +16,9 @@ def health_check():
 
 @app.post("/upload-resume")
 async def upload_resume(file: UploadFile = File(...)):
+    text = extract_text_from_pdf(file.file)
+
     return {
         "filename": file.filename,
-        "content_type": file.content_type,
-        "message": "Resume uploaded successfully"
+        "text": text[:1000]  # Return first 1000 characters
     }
