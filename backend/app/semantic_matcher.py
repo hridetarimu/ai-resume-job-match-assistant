@@ -13,4 +13,4 @@ def semantic_similarity(text1: str, text2: str):
         [embeddings[1]]
     )[0][0]
 
-    return round(score * 100, 2)
+    return round(float(score * 100), 2)
