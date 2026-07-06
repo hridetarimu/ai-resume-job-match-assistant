@@ -4,6 +4,7 @@ from app.skills import extract_skills
 from app.matching import compare_skills
 from app.suggestions import generate_suggestions
 from app.semantic_matcher import semantic_similarity
+from app.ats_rating import get_ats_rating
 
 
 def match_resume_to_job(file, job_text):
@@ -19,6 +20,8 @@ def match_resume_to_job(file, job_text):
     semantic_score = float(semantic_similarity(resume_text, cleaned_job))
 
     overall_score = float(round((skill_score + semantic_score) / 2, 2))
+    
+    ats_rating = get_ats_rating(overall_score)
 
     suggestions = generate_suggestions(result["missing_skills"])
 
@@ -30,5 +33,6 @@ def match_resume_to_job(file, job_text):
         "overall_score": overall_score,
         "matched_skills": result["matched_skills"],
         "missing_skills": result["missing_skills"],
-        "suggestions": suggestions
+        "suggestions": suggestions,
+        "ats_rating": ats_rating
     }
