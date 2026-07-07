@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Job Match Assistant</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>AI Resume Job Match Assistant</h1>
+
+    <p>
+        Upload your resume and paste a job description to get an ATS-style match score.
+    </p>
+
+    <div class="card">
+
+        <label><strong>Upload Resume PDF</strong></label>
+        <br><br>
+
+        <input
+            type="file"
+            id="resumeFile"
+            accept=".pdf"
+        >
+
+        <br><br>
+
+        <label><strong>Job Description</strong></label>
+
+        <textarea
+            id="jobText"
+            rows="10"
+            placeholder="Paste the job description here..."
+        ></textarea>
+
+        <br>
+
+        <button id="analyzeBtn">
+            Analyze Resume
+        </button>
+
+    </div>
+
+
+    <div id="results" class="results">
+
+        <h2>Resume Analysis</h2>
+
+        <div class="score-card">
+
+            <h3>Overall Match</h3>
+
+            <div class="progress">
+                <div id="overallBar" class="progress-fill"></div>
+            </div>
+
+            <p id="overallScore"></p>
+
+        </div>
+
+
+        <div class="score-card">
+
+            <h3>Skill Match</h3>
+
+            <div class="progress">
+                <div id="skillBar" class="progress-fill"></div>
+            </div>
+
+            <p id="skillMatch"></p>
+
+        </div>
+
+
+        <div class="score-card">
+
+            <h3>Semantic Match</h3>
+
+            <div class="progress">
+                <div id="semanticBar" class="progress-fill"></div>
+            </div>
+
+            <p id="semanticMatch"></p>
+
+        </div>
+
+
+        <h3>✅ Matched Skills</h3>
+
+        <ul id="matchedSkills"></ul>
+
+
+        <h3>❌ Missing Skills</h3>
+
+        <ul id="missingSkills"></ul>
+
+
+        <h3>💡 Suggestions</h3>
+
+        <ul id="suggestions"></ul>
+
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
