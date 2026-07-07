@@ -3,23 +3,49 @@ body {
   background: #f4f6f9;
   margin: 0;
   padding: 40px;
+  color: #1f2937;
 }
 
 .container {
-  max-width: 900px;
+  max-width: 950px;
   margin: auto;
 }
 
 .card,
 .results {
   background: white;
-  padding: 25px;
+  padding: 28px;
   margin-top: 25px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,.08);
+  border-radius: 14px;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+}
+
+.hidden {
+  display: none;
+}
+
+label {
+  display: block;
+  margin-top: 18px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+textarea,
+input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+textarea {
+  min-height: 180px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
 }
 
 button {
+  margin-top: 20px;
   background: #2563eb;
   color: white;
   border: none;
@@ -33,12 +59,26 @@ button:hover {
   background: #1d4ed8;
 }
 
-textarea {
-  width: 100%;
-  margin-top: 10px;
-  margin-bottom: 20px;
-  padding: 12px;
-  border-radius: 8px;
+button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.score-section {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  margin-top: 25px;
+  flex-wrap: wrap;
+}
+
+.score-details {
+  flex: 1;
+  min-width: 280px;
+}
+
+.score-card {
+  margin-bottom: 24px;
 }
 
 .progress {
@@ -47,22 +87,19 @@ textarea {
   background: #e5e7eb;
   border-radius: 20px;
   overflow: hidden;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .progress-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg,#22c55e,#16a34a);
-  transition: width .8s ease;
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  transition: width 0.8s ease;
 }
 
-.score-card {
-  margin-bottom: 30px;
-}
-
-ul {
-  padding-left: 20px;
+canvas {
+  max-width: 220px;
+  max-height: 220px;
 }
 
 li {

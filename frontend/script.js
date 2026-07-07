@@ -1,72 +1,103 @@
-console.log("script.js is loaded");
-
 const button = document.getElementById("analyzeBtn");
+let scoreChart = null;
 
 button.addEventListener("click", async () => {
-    const file = document.getElementById("resumeFile").files[0];
-    const jobText = document.getElementById("jobText").value;
+  const file = document.getElementById("resumeFile").files[0];
+  const jobText = document.getElementById("jobText").value;
 
-    if (!file || !jobText.trim()) {
-        alert("Please upload a resume and paste a job description.");
-        return;
+  if (!file || !jobText.trim()) {
+    alert("Please upload a resume and paste a job description.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("job_text", jobText);
+
+  button.textContent = "Analyzing...";
+  button.disabled = true;
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/match", {
+      method: "POST",
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error("Backend error");
     }
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("job_text", jobText);
+    const data = await response.json();
 
-    button.textContent = "Analyzing...";
-    button.disabled = true;
+    const overall = Number(data.overall_score || 0);
+    const skill = Number(data.skill_match || 0);
+    const semantic = Number(data.semantic_match || 0);
 
-    try {
-        const response = await fetch("http://127.0.0.1:8000/match", {
-            method: "POST",
-            body: formData
-        });
+    document.getElementById("results").classList.remove("hidden");
 
-        const data = await response.json();
+    document.getElementById("overallScore").textContent = `${overall.toFixed(2)}%`;
+    document.getElementById("skillMatch").textContent = `${skill.toFixed(2)}%`;
+    document.getElementById("semanticMatch").textContent = `${semantic.toFixed(2)}%`;
 
-        if (!response.ok) {
-            throw new Error("Something went wrong while analyzing the resume.");
-        }
+    document.getElementById("overallBar").style.width = `${overall}%`;
+    document.getElementById("skillBar").style.width = `${skill}%`;
+    document.getElementById("semanticBar").style.width = `${semantic}%`;
 
-        document.getElementById("results").classList.remove("hidden");
+    fillList("matchedSkills", data.matched_skills);
+    fillList("missingSkills", data.missing_skills);
+    fillList("suggestions", data.suggestions);
 
-        document.getElementById("overallScore").textContent = `${data.overall_score}%`;
-        document.getElementById("skillMatch").textContent = `${data.skill_match}%`;
-        document.getElementById("semanticMatch").textContent = `${data.semantic_match}%`;
+    drawChart(overall);
 
-        document.getElementById("overallBar").style.width = `${data.overall_score}%`;
-        document.getElementById("skillBar").style.width = `${data.skill_match}%`;
-        document.getElementById("semanticBar").style.width = `${data.semantic_match}%`;
-
-        fillList("matchedSkills", data.matched_skills);
-        fillList("missingSkills", data.missing_skills);
-        fillList("suggestions", data.suggestions);
-
-    } catch (error) {
-        console.error(error);
-        alert("Error analyzing resume. Please check that your FastAPI server is running.");
-    } finally {
-        button.textContent = "Analyze Resume";
-        button.disabled = false;
-    }
+  } catch (error) {
+    console.error(error);
+    alert("Error analyzing resume. Please check that your FastAPI server is running.");
+  } finally {
+    button.textContent = "Analyze Resume";
+    button.disabled = false;
+  }
 });
 
 function fillList(id, items) {
-    const ul = document.getElementById(id);
-    ul.innerHTML = "";
+  const ul = document.getElementById(id);
+  ul.innerHTML = "";
 
-    if (!items || items.length === 0) {
-        const li = document.createElement("li");
-        li.textContent = "None";
-        ul.appendChild(li);
-        return;
+  if (!items || items.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = "None";
+    ul.appendChild(li);
+    return;
+  }
+
+  items.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    ul.appendChild(li);
+  });
+}
+
+function drawChart(score) {
+  const ctx = document.getElementById("scoreChart");
+
+  if (scoreChart) {
+    scoreChart.destroy();
+  }
+
+  scoreChart = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      datasets: [{
+        data: [score, 100 - score],
+        backgroundColor: ["#22c55e", "#e5e7eb"],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      cutout: "75%",
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: false }
+      }
     }
-
-    items.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item;
-        ul.appendChild(li);
-    });
+  });
 }
