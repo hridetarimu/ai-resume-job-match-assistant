@@ -4,10 +4,20 @@ from pydantic import BaseModel
 from app.job_parser import clean_job_description
 from app.skills import extract_skills
 from app.matcher import match_resume_to_job
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="AI Resume Job Match Assistant")
 class JobDescription(BaseModel):
     text: str
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.get("/")
 def home():
