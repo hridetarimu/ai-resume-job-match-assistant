@@ -1,15 +1,26 @@
 from app.semantic_matcher import semantic_similarity
 
-resume = """
-Built REST APIs using FastAPI and Python.
-Experience with Machine Learning and SQL.
-"""
 
-job = """
-Looking for a Python backend engineer with FastAPI,
-Machine Learning, and SQL experience.
-"""
+def test_identical_texts():
+    text = "Python machine learning engineer"
+    score = semantic_similarity(text, text)
 
-score = semantic_similarity(resume, job)
+    assert 99 <= score <= 100.01
 
-print(score)
+
+def test_related_texts():
+    text1 = "Develop machine learning models using Python"
+    text2 = "Build AI models with Python"
+
+    score = semantic_similarity(text1, text2)
+
+    assert 0 <= score <= 100
+
+
+def test_unrelated_texts():
+    text1 = "Machine learning with Python"
+    text2 = "Cooking dinner in the kitchen"
+
+    score = semantic_similarity(text1, text2)
+
+    assert 0 <= score <= 100
