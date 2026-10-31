@@ -50,6 +50,8 @@ It then combines both scores into an overall ATS score and provides actionable r
 | Progress Bars | ✅ |
 | Circular Score Gauge | ✅ |
 | Personalized Suggestions | ✅ |
+| Dark Mode | ✅ |
+| Downloadable PDF Report | ✅ |
 | REST API | ✅ |
 | Swagger Documentation | ✅ |
 
