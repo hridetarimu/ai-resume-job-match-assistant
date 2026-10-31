@@ -1,66 +1,255 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Resume Job Match Assistant</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AI Resume Job Match Assistant</title>
+
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js for matching score visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- jsPDF for downloadable reports -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.0.0/jspdf.umd.min.js"></script>
 </head>
+
 <body>
-  <div class="container">
-    <h1>AI Resume Job Match Assistant</h1>
-    <button id="themeToggle" class="theme-btn">🌙 Dark Mode</button>
-    <p>Upload your resume and paste a job description to get an ATS-style match score.</p>
 
-    <div class="card">
-      <label>Upload Resume PDF</label>
-      <input type="file" id="resumeFile" accept=".pdf" />
+    <div class="container">
 
-      <label>Job Description</label>
-      <textarea id="jobText" placeholder="Paste job description here..."></textarea>
+        <!-- ======================================
+             Header
+        ======================================= -->
 
-      <button id="analyzeBtn">Analyze Resume</button>
+        <header>
+            <h1>AI Resume Job Match Assistant</h1>
+
+            <button
+                id="themeToggle"
+                class="theme-btn"
+                type="button"
+            >
+                🌙 Dark Mode
+            </button>
+
+            <p>
+                Upload your resume and paste a job description
+                to get an ATS-style match score.
+            </p>
+        </header>
+
+        <!-- ======================================
+             Resume Upload Form
+        ======================================= -->
+
+        <section class="card">
+
+            <label for="resumeFile">
+                Upload Resume PDF
+            </label>
+
+            <input
+                type="file"
+                id="resumeFile"
+                name="resumeFile"
+                accept=".pdf,application/pdf"
+                required
+            >
+
+            <label for="jobText">
+                Job Description
+            </label>
+
+            <textarea
+                id="jobText"
+                name="jobText"
+                placeholder="Paste job description here..."
+                rows="8"
+                required
+            ></textarea>
+
+            <button
+                id="analyzeBtn"
+                type="button"
+            >
+                Analyze Resume
+            </button>
+
+        </section>
+
+        <!-- ======================================
+             Resume Analysis Results
+        ======================================= -->
+
+        <section
+            id="results"
+            class="results hidden"
+            aria-label="Resume analysis results"
+        >
+
+            <h2>Resume Analysis</h2>
+
+            <!-- Matching Scores -->
+
+            <div class="score-section">
+
+                <!-- Doughnut Chart -->
+
+                <div class="chart-container">
+                    <canvas
+                        id="scoreChart"
+                        width="220"
+                        height="220"
+                        aria-label="Overall resume match chart"
+                        role="img"
+                    ></canvas>
+                </div>
+
+                <!-- Progress Bars -->
+
+                <div class="score-details">
+
+                    <!-- Overall Match -->
+
+                    <div class="score-card">
+
+                        <h3>Overall Match</h3>
+
+                        <div class="progress">
+                            <div
+                                id="overallBar"
+                                class="progress-fill"
+                            ></div>
+                        </div>
+
+                        <p id="overallScore">0%</p>
+
+                    </div>
+
+                    <!-- Skill Match -->
+
+                    <div class="score-card">
+
+                        <h3>Skill Match</h3>
+
+                        <div class="progress">
+                            <div
+                                id="skillBar"
+                                class="progress-fill"
+                            ></div>
+                        </div>
+
+                        <p id="skillMatch">0%</p>
+
+                    </div>
+
+                    <!-- Semantic Match -->
+
+                    <div class="score-card">
+
+                        <h3>Semantic Match</h3>
+
+                        <div class="progress">
+                            <div
+                                id="semanticBar"
+                                class="progress-fill"
+                            ></div>
+                        </div>
+
+                        <p id="semanticMatch">0%</p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ======================================
+                 Matched Skills
+            ======================================= -->
+
+            <div class="skills-section">
+
+                <h3>✅ Matched Skills</h3>
+
+                <ul id="matchedSkills"></ul>
+
+            </div>
+
+            <!-- ======================================
+                 Missing Skills
+            ======================================= -->
+
+            <div class="skills-section">
+
+                <h3>❌ Missing Skills</h3>
+
+                <ul id="missingSkills"></ul>
+
+            </div>
+
+            <!-- ======================================
+                 Suggestions
+            ======================================= -->
+
+            <div class="suggestions-section">
+
+                <h3>💡 Suggestions</h3>
+
+                <ul id="suggestions"></ul>
+
+            </div>
+
+            <!-- ======================================
+                 Download PDF Report
+            ======================================= -->
+
+            <div class="report-section">
+
+                <button
+                    id="downloadReportBtn"
+                    class="download-btn"
+                    type="button"
+                    disabled
+                >
+                    📥 Download ATS Report
+                </button>
+
+                <p class="report-note">
+                    Scores are estimates of resume-to-job
+                    alignment, not results from a specific
+                    employer's applicant tracking system.
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- ======================================
+             Footer
+        ======================================= -->
+
+        <footer class="footer">
+
+            <p>
+                AI Resume Job Match Assistant |
+                Built with FastAPI and NLP
+            </p>
+
+        </footer>
+
     </div>
 
-    <div id="results" class="results hidden">
-      <h2>Resume Analysis</h2>
+    <!-- Main frontend JavaScript -->
+    <script src="script.js"></script>
 
-      <div class="score-section">
-        <canvas id="scoreChart" width="220" height="220"></canvas>
-
-        <div class="score-details">
-          <div class="score-card">
-            <h3>Overall Match</h3>
-            <div class="progress"><div id="overallBar" class="progress-fill"></div></div>
-            <p id="overallScore">0%</p>
-          </div>
-
-          <div class="score-card">
-            <h3>Skill Match</h3>
-            <div class="progress"><div id="skillBar" class="progress-fill"></div></div>
-            <p id="skillMatch">0%</p>
-          </div>
-
-          <div class="score-card">
-            <h3>Semantic Match</h3>
-            <div class="progress"><div id="semanticBar" class="progress-fill"></div></div>
-            <p id="semanticMatch">0%</p>
-          </div>
-        </div>
-      </div>
-
-      <h3>✅ Matched Skills</h3>
-      <ul id="matchedSkills"></ul>
-
-      <h3>❌ Missing Skills</h3>
-      <ul id="missingSkills"></ul>
-
-      <h3>💡 Suggestions</h3>
-      <ul id="suggestions"></ul>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
 </body>
 </html>
