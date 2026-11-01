@@ -5,3 +5,7 @@ venv/
 .venv/
 .DS_Store
 .ipynb_checkpoints/
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
